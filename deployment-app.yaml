@@ -4,14 +4,11 @@ metadata:
   annotations:
     deployment.kubernetes.io/revision: "1"
     kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"mutation2","example-webhook-enabled":"true"},"name":"mutation-deployment-test2","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"mutation2"}},"template":{"metadata":{"labels":{"app":"mutation2","example-webhook-enabled":"true"}},"spec":{"containers":[{"command":["/bin/bash"],"image":"trohit7/mutation:update","name":"mutation2","ports":[{"containerPort":8080}],"tty":true}]}}}}
-  creationTimestamp: "2024-01-18T19:23:58Z"
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"example-webhook"},"name":"example-webhook","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"example-webhook"}},"template":{"metadata":{"labels":{"app":"example-webhook"}},"spec":{"containers":[{"image":"trohit7/webhook:withrules1","imagePullPolicy":"Always","name":"server","ports":[{"containerPort":8443,"name":"tls"},{"containerPort":80,"name":"metrics"}],"volumeMounts":[{"mountPath":"/etc/webhook/certs/","name":"webhook-tls-certs","readOnly":true},{"mountPath":"/etc/rules","name":"config-volume"}]}],"nodeSelector":{"kubernetes.io/os":"linux"},"securityContext":{"runAsNonRoot":true,"runAsUser":1234},"serviceAccountName":"example-webhook","volumes":[{"name":"webhook-tls-certs","secret":{"secretName":"example-webhook-tls"}},{"configMap":{"name":"my-webhook-config"},"name":"config-volume"}]}}}}
+  creationTimestamp: "2024-01-28T18:33:55Z"
   labels:
-    app: mutation2
-    author: minikube-user
-    example-webhook-enabled: "true"
-    operation: CREATE
-  name: mutation-deployment-test2
+    app: example-webhook
+  name: example-webhook
   namespace: default
 spec:
   progressDeadlineSeconds: 600
@@ -19,7 +16,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: mutation2
+      app: example-webhook
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -29,24 +26,45 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: mutation2
-        example-webhook-enabled: "true"
+        app: example-webhook
     spec:
       containers:
-      - command:
-        - /bin/bash
-        image: trohit7/mutation:update
-        imagePullPolicy: IfNotPresent
-        name: mutation2
+      - image: trohit7/webhook:withrules1
+        imagePullPolicy: Always
+        name: server
         ports:
-        - containerPort: 8080
+        - containerPort: 8443
+          name: tls
+          protocol: TCP
+        - containerPort: 80
+          name: metrics
           protocol: TCP
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-        tty: true
+        volumeMounts:
+        - mountPath: /etc/webhook/certs/
+          name: webhook-tls-certs
+          readOnly: true
+        - mountPath: /etc/rules
+          name: config-volume
       dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1234
+      serviceAccount: example-webhook
+      serviceAccountName: example-webhook
       terminationGracePeriodSeconds: 30
+      volumes:
+      - name: webhook-tls-certs
+        secret:
+          defaultMode: 420
+          secretName: example-webhook-tls
+      - configMap:
+          defaultMode: 420
+          name: my-webhook-config
+        name: config-volume

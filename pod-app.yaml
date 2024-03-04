@@ -1,51 +1,58 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  creationTimestamp: "2024-01-18T19:23:59Z"
-  generateName: mutation-deployment-test2-8484c4598c-
+  creationTimestamp: "2024-01-28T18:33:55Z"
+  generateName: example-webhook-69965578b6-
   labels:
-    app: mutation2
-    author: system_serviceaccount_kube-system_replicaset-controller
-    example-webhook-enabled: "true"
-    operation: CREATE
-    pod-template-hash: 8484c4598c
-  name: mutation-deployment-test2-8484c4598c-lvhlr
+    app: example-webhook
+    pod-template-hash: 69965578b6
+  name: example-webhook-69965578b6-z8jjj
   namespace: default
   ownerReferences:
   - apiVersion: apps/v1
     blockOwnerDeletion: true
     controller: true
     kind: ReplicaSet
-    name: mutation-deployment-test2-8484c4598c
-    uid: afc8ec18-fc42-4805-bbb0-3f49f423d084
+    name: example-webhook-69965578b6
+    uid: 2f3df2f7-e638-4ddc-aeee-e09c99a21eb6
 spec:
   containers:
-  - command:
-    - /bin/bash
-    image: trohit7/mutation:update
-    imagePullPolicy: IfNotPresent
-    name: mutation2
+  - image: trohit7/webhook:withrules1
+    imagePullPolicy: Always
+    name: server
     ports:
-    - containerPort: 8080
+    - containerPort: 8443
+      name: tls
+      protocol: TCP
+    - containerPort: 80
+      name: metrics
       protocol: TCP
     resources: {}
     terminationMessagePath: /dev/termination-log
     terminationMessagePolicy: File
-    tty: true
     volumeMounts:
+    - mountPath: /etc/webhook/certs/
+      name: webhook-tls-certs
+      readOnly: true
+    - mountPath: /etc/rules
+      name: config-volume
     - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-      name: kube-api-access-fsvkd
+      name: kube-api-access-wbjpp
       readOnly: true
   dnsPolicy: ClusterFirst
   enableServiceLinks: true
   nodeName: minikube
+  nodeSelector:
+    kubernetes.io/os: linux
   preemptionPolicy: PreemptLowerPriority
   priority: 0
   restartPolicy: Always
   schedulerName: default-scheduler
-  securityContext: {}
-  serviceAccount: default
-  serviceAccountName: default
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1234
+  serviceAccount: example-webhook
+  serviceAccountName: example-webhook
   terminationGracePeriodSeconds: 30
   tolerations:
   - effect: NoExecute
@@ -57,7 +64,15 @@ spec:
     operator: Exists
     tolerationSeconds: 300
   volumes:
-  - name: kube-api-access-fsvkd
+  - name: webhook-tls-certs
+    secret:
+      defaultMode: 420
+      secretName: example-webhook-tls
+  - configMap:
+      defaultMode: 420
+      name: my-webhook-config
+    name: config-volume
+  - name: kube-api-access-wbjpp
     projected:
       defaultMode: 420
       sources:
