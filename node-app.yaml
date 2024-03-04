@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Node
+metadata:
+  annotations:
+    kubeadm.alpha.kubernetes.io/cri-socket: unix:///var/run/cri-dockerd.sock
+    node.alpha.kubernetes.io/ttl: "0"
+    volumes.kubernetes.io/controller-managed-attach-detach: "true"
+  creationTimestamp: "2024-01-18T08:22:34Z"
+  labels:
+    beta.kubernetes.io/arch: amd64
+    beta.kubernetes.io/os: linux
+    kubernetes.io/arch: amd64
+    kubernetes.io/hostname: minikube
+    kubernetes.io/os: linux
+    minikube.k8s.io/commit: fd7ecd9c4599bef9f04c0986c4a0187f98a4396e
+    minikube.k8s.io/name: minikube
+    minikube.k8s.io/primary: "true"
+    minikube.k8s.io/updated_at: 2024_01_18T13_52_37_0700
+    minikube.k8s.io/version: v1.31.2
+    node-role.kubernetes.io/control-plane: ""
+    node.kubernetes.io/exclude-from-external-load-balancers: ""
+  name: minikube
+spec:
+  podCIDR: 10.244.0.0/24
+  podCIDRs:
+  - 10.244.0.0/24

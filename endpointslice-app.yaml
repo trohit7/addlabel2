@@ -1,0 +1,40 @@
+addressType: IPv4
+apiVersion: discovery.k8s.io/v1
+endpoints:
+- addresses:
+  - 10.244.0.151
+  conditions:
+    ready: true
+    serving: true
+    terminating: false
+  nodeName: minikube
+  targetRef:
+    kind: Pod
+    name: kubernetes-dashboard-5c5cfc8747-sdvhl
+    namespace: kubernetes-dashboard
+    uid: 2bd249c2-57b4-45f4-a17a-e5711da0a322
+kind: EndpointSlice
+metadata:
+  annotations:
+    endpoints.kubernetes.io/last-change-trigger-time: "2024-01-18T08:22:44Z"
+  creationTimestamp: "2024-01-18T08:22:49Z"
+  generateName: kubernetes-dashboard-
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    endpointslice.kubernetes.io/managed-by: endpointslice-controller.k8s.io
+    k8s-app: kubernetes-dashboard
+    kubernetes.io/minikube-addons: dashboard
+    kubernetes.io/service-name: kubernetes-dashboard
+  name: kubernetes-dashboard-58wds
+  namespace: kubernetes-dashboard
+  ownerReferences:
+  - apiVersion: v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Service
+    name: kubernetes-dashboard
+    uid: 704aae8e-9339-4913-bee0-ea287b306e91
+ports:
+- name: ""
+  port: 9090
+  protocol: TCP

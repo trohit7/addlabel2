@@ -4,19 +4,21 @@ metadata:
   annotations:
     deployment.kubernetes.io/revision: "1"
     kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"example-webhook"},"name":"example-webhook","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"example-webhook"}},"template":{"metadata":{"labels":{"app":"example-webhook"}},"spec":{"containers":[{"image":"trohit7/webhook:withrules1","imagePullPolicy":"Always","name":"server","ports":[{"containerPort":8443,"name":"tls"},{"containerPort":80,"name":"metrics"}],"volumeMounts":[{"mountPath":"/etc/webhook/certs/","name":"webhook-tls-certs","readOnly":true},{"mountPath":"/etc/rules","name":"config-volume"}]}],"nodeSelector":{"kubernetes.io/os":"linux"},"securityContext":{"runAsNonRoot":true,"runAsUser":1234},"serviceAccountName":"example-webhook","volumes":[{"name":"webhook-tls-certs","secret":{"secretName":"example-webhook-tls"}},{"configMap":{"name":"my-webhook-config"},"name":"config-volume"}]}}}}
-  creationTimestamp: "2024-01-28T18:33:55Z"
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"addonmanager.kubernetes.io/mode":"Reconcile","k8s-app":"kubernetes-dashboard","kubernetes.io/minikube-addons":"dashboard"},"name":"kubernetes-dashboard","namespace":"kubernetes-dashboard"},"spec":{"replicas":1,"revisionHistoryLimit":10,"selector":{"matchLabels":{"k8s-app":"kubernetes-dashboard"}},"template":{"metadata":{"labels":{"gcp-auth-skip-secret":"true","k8s-app":"kubernetes-dashboard"}},"spec":{"containers":[{"args":["--namespace=kubernetes-dashboard","--enable-skip-login","--disable-settings-authorizer"],"image":"docker.io/kubernetesui/dashboard:v2.7.0@sha256:2e500d29e9d5f4a086b908eb8dfe7ecac57d2ab09d65b24f588b1d449841ef93","livenessProbe":{"httpGet":{"path":"/","port":9090},"initialDelaySeconds":30,"timeoutSeconds":30},"name":"kubernetes-dashboard","ports":[{"containerPort":9090,"protocol":"TCP"}],"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"runAsGroup":2001,"runAsUser":1001},"volumeMounts":[{"mountPath":"/tmp","name":"tmp-volume"}]}],"nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"kubernetes-dashboard","tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/master"}],"volumes":[{"emptyDir":{},"name":"tmp-volume"}]}}}}
+  creationTimestamp: "2024-01-18T08:22:44Z"
   labels:
-    app: example-webhook
-  name: example-webhook
-  namespace: default
+    addonmanager.kubernetes.io/mode: Reconcile
+    k8s-app: kubernetes-dashboard
+    kubernetes.io/minikube-addons: dashboard
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: example-webhook
+      k8s-app: kubernetes-dashboard
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -26,45 +28,53 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: example-webhook
+        gcp-auth-skip-secret: "true"
+        k8s-app: kubernetes-dashboard
     spec:
       containers:
-      - image: trohit7/webhook:withrules1
-        imagePullPolicy: Always
-        name: server
+      - args:
+        - --namespace=kubernetes-dashboard
+        - --enable-skip-login
+        - --disable-settings-authorizer
+        image: docker.io/kubernetesui/dashboard:v2.7.0@sha256:2e500d29e9d5f4a086b908eb8dfe7ecac57d2ab09d65b24f588b1d449841ef93
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9090
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 30
+        name: kubernetes-dashboard
         ports:
-        - containerPort: 8443
-          name: tls
-          protocol: TCP
-        - containerPort: 80
-          name: metrics
+        - containerPort: 9090
           protocol: TCP
         resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 2001
+          runAsUser: 1001
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
-        - mountPath: /etc/webhook/certs/
-          name: webhook-tls-certs
-          readOnly: true
-        - mountPath: /etc/rules
-          name: config-volume
+        - mountPath: /tmp
+          name: tmp-volume
       dnsPolicy: ClusterFirst
       nodeSelector:
         kubernetes.io/os: linux
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1234
-      serviceAccount: example-webhook
-      serviceAccountName: example-webhook
+      securityContext: {}
+      serviceAccount: kubernetes-dashboard
+      serviceAccountName: kubernetes-dashboard
       terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
       volumes:
-      - name: webhook-tls-certs
-        secret:
-          defaultMode: 420
-          secretName: example-webhook-tls
-      - configMap:
-          defaultMode: 420
-          name: my-webhook-config
-        name: config-volume
+      - emptyDir: {}
+        name: tmp-volume
