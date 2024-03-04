@@ -6,12 +6,15 @@ metadata:
   creationTimestamp: "2024-01-18T08:22:35Z"
   labels:
     kubernetes.io/bootstrapping: rbac-defaults
-  name: system:volume-scheduler
+  name: system:public-info-viewer
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: system:volume-scheduler
+  name: system:public-info-viewer
 subjects:
 - apiGroup: rbac.authorization.k8s.io
-  kind: User
-  name: system:kube-scheduler
+  kind: Group
+  name: system:authenticated
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:unauthenticated

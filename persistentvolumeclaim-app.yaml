@@ -10,9 +10,11 @@ metadata:
   finalizers:
   - kubernetes.io/pvc-protection
   labels:
+    app.kubernetes.io/component: postgresql
     app.kubernetes.io/instance: gitea
-    app.kubernetes.io/name: redis-cluster
-  name: redis-data-gitea-redis-cluster-2
+    app.kubernetes.io/name: postgresql-ha
+    role: data
+  name: data-gitea-postgresql-ha-postgresql-1
   namespace: default
 spec:
   accessModes:
@@ -22,4 +24,4 @@ spec:
       storage: 8Gi
   storageClassName: standard
   volumeMode: Filesystem
-  volumeName: pvc-6016d282-0afa-41e4-8194-f4cb625479b1
+  volumeName: pvc-7b497ad3-07b5-4903-826a-56ee7fae5f17
