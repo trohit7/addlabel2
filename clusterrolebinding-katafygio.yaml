@@ -1,0 +1,21 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"ClusterRoleBinding","metadata":{"annotations":{},"labels":{"app":"katafygio","chart":"katafygio-0.5.1","heritage":"Helm","release":"katafygio"},"name":"katafygio"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"ClusterRole","name":"katafygio"},"subjects":[{"kind":"ServiceAccount","name":"katafygio","namespace":"default"}]}
+  creationTimestamp: "2024-03-04T11:19:19Z"
+  labels:
+    app: katafygio
+    chart: katafygio-0.5.1
+    heritage: Helm
+    release: katafygio
+  name: katafygio
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: katafygio
+subjects:
+- kind: ServiceAccount
+  name: katafygio
+  namespace: default

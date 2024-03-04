@@ -1,0 +1,12 @@
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  creationTimestamp: "2024-01-18T08:22:34Z"
+  labels:
+    kube-aggregator.kubernetes.io/automanaged: onstart
+  name: v1.admissionregistration.k8s.io
+spec:
+  group: admissionregistration.k8s.io
+  groupPriorityMinimum: 16700
+  version: v1
+  versionPriority: 15

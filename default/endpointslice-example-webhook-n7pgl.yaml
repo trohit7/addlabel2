@@ -1,0 +1,40 @@
+addressType: IPv4
+apiVersion: discovery.k8s.io/v1
+endpoints:
+- addresses:
+  - 10.244.0.154
+  conditions:
+    ready: true
+    serving: true
+    terminating: false
+  nodeName: minikube
+  targetRef:
+    kind: Pod
+    name: example-webhook-69965578b6-z8jjj
+    namespace: default
+    uid: d5f6ea21-17ad-47af-8d0d-15535b760111
+kind: EndpointSlice
+metadata:
+  annotations:
+    endpoints.kubernetes.io/last-change-trigger-time: "2024-01-28T18:33:54Z"
+  creationTimestamp: "2024-01-28T18:33:55Z"
+  generateName: example-webhook-
+  labels:
+    endpointslice.kubernetes.io/managed-by: endpointslice-controller.k8s.io
+    kubernetes.io/service-name: example-webhook
+  name: example-webhook-n7pgl
+  namespace: default
+  ownerReferences:
+  - apiVersion: v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Service
+    name: example-webhook
+    uid: 5a4c8104-7ee8-4f05-b7c2-50da06c60b4c
+ports:
+- name: metrics
+  port: 80
+  protocol: TCP
+- name: application
+  port: 8443
+  protocol: TCP

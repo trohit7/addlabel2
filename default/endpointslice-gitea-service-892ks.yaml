@@ -1,0 +1,37 @@
+addressType: IPv4
+apiVersion: discovery.k8s.io/v1
+endpoints:
+- addresses:
+  - 10.244.0.148
+  conditions:
+    ready: true
+    serving: true
+    terminating: false
+  nodeName: minikube
+  targetRef:
+    kind: Pod
+    name: gitea-794579b59f-9thbn
+    namespace: default
+    uid: a248bf5c-07c3-4472-bb6a-8a7543cef669
+kind: EndpointSlice
+metadata:
+  annotations:
+    endpoints.kubernetes.io/last-change-trigger-time: "2024-02-07T11:33:19Z"
+  creationTimestamp: "2024-02-07T11:33:19Z"
+  generateName: gitea-service-
+  labels:
+    endpointslice.kubernetes.io/managed-by: endpointslice-controller.k8s.io
+    kubernetes.io/service-name: gitea-service
+  name: gitea-service-892ks
+  namespace: default
+  ownerReferences:
+  - apiVersion: v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Service
+    name: gitea-service
+    uid: 8c854b56-95d9-4755-8250-77dd36997d2a
+ports:
+- name: ""
+  port: 3000
+  protocol: TCP
